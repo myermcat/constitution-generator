@@ -1,6 +1,6 @@
 # Constitution Maker
 
-A simple, powerful tool for creating, editing, and generating constitutions in HTML and PDF formats. Based on the real CEGSA (Computer Engineering Student Association) constitution structure.
+A simple, powerful tool for creating, editing, and generating constitutions in HTML and PDF formats. Based on the CEGSA (Computer Engineering Student Association) constitution structure.
 
 ## 📄 How to Save as PDF (Most Important!)
 
@@ -11,10 +11,11 @@ A simple, powerful tool for creating, editing, and generating constitutions in H
 3. **Click "Export PDF"** button
 4. **Print dialog opens** - Look for the **"Destination"** dropdown
 5. **Change destination** from your printer to **"Save as PDF"**
-6. **Click "Save"** and choose where to save your PDF file
-7. **Done!** You now have a professional PDF constitution
+6. **⚠️ IMPORTANT**: In the print dialog, **uncheck "Headers and footers"** to remove the file path
+7. **Click "Save"** and choose where to save your PDF file
+8. **Done!** You now have a professional PDF constitution
 
-> 💡 **Tip**: The PDF will have perfect formatting with Roman numerals, bullet points, and proper legal document styling.
+> 💡 **Tip**: The PDF will have perfect formatting with Roman numerals, bullet points, and proper legal document styling. Unchecking "Headers and footers" removes the file path but keeps all the content formatting.
 
 ## Features
 
@@ -143,20 +144,5 @@ constitution-maker/
 - **Works offline** - Open the HTML file directly in any browser
 - **Cross-platform** - Works on Windows, Mac, Linux, mobile devices
 
-## Example Use Cases
 
-- **Student Organizations**: Create constitutions for clubs and societies
-- **Non-profit Organizations**: Draft governing documents
-- **Community Groups**: Establish rules and procedures
-- **Professional Associations**: Create membership guidelines
-- **International Organizations**: Multi-language constitution support
-
-## Tips for Best Results
-
-1. **Use clear, concise language** in your constitution text
-2. **Test PDF generation** with your specific content
-3. **Save JSON backups** regularly during editing
-4. **Use templates** as starting points for common organization types
-5. **Review formatting** in both HTML and PDF outputs
-6. **Consider legal review** for important constitutions
 

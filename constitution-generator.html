@@ -202,6 +202,17 @@
                 display: none !important;
             }
             
+            .pdf-instructions {
+                display: none !important;
+            }
+            
+            .header,
+            .header h1,
+            .header p {
+                display: none !important;
+                visibility: hidden !important;
+            }
+            
             .constitution {
                 box-shadow: none;
                 padding: 20px;
@@ -214,19 +225,139 @@
             .container {
                 padding: 0;
             }
+            
+            /* Hide any browser-generated content */
+            @page {
+                margin: 0.5in;
+            }
+            
+            /* Hide any potential footer content */
+            body::after,
+            html::after,
+            *::after {
+                display: none !important;
+            }
+            
+            /* Ensure clean margins and no browser UI */
+            @page {
+                margin: 0.5in;
+                size: A4;
+            }
+            
+            /* Remove any potential page breaks and headers/footers */
+            @page :first {
+                margin-top: 0.5in;
+            }
+            
+            /* Force hide header completely */
+            div.header {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                overflow: hidden !important;
+            }
+            
+            /* Custom page numbering */
+            .page-number {
+                position: fixed;
+                bottom: 0.5in;
+                right: 0.5in;
+                font-size: 12px;
+                color: #666;
+            }
+            
+            /* Page breaks */
+            .page-break {
+                page-break-before: always;
+            }
         }
 
         .pdf-instructions {
-            background: #e7f3ff;
-            border: 1px solid #b3d9ff;
-            border-radius: 4px;
-            padding: 15px;
+            background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
+            border: 2px solid #4a90e2;
+            border-radius: 12px;
+            padding: 0;
             margin-bottom: 20px;
             display: none;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+            overflow: hidden;
         }
 
         .pdf-instructions.show {
             display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .instructions-header {
+            background: #4a90e2;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+        }
+
+        .instructions-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-instructions {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .close-instructions:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .instructions-content {
+            padding: 20px;
+        }
+
+        .instructions-content ol {
+            margin: 0 0 15px 0;
+            padding-left: 20px;
+        }
+
+        .instructions-content li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .tip-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #856404;
         }
     </style>
 </head>
@@ -238,13 +369,22 @@
         </div>
 
         <div class="pdf-instructions" id="pdfInstructions">
-            <h4>📄 How to Save as PDF:</h4>
-            <ol>
-                <li>Click <strong>Print</strong> in the dialog that just opened</li>
-                <li>In the print dialog, change the <strong>Destination</strong> to <strong>"Save as PDF"</strong></li>
-                <li>Click <strong>Save</strong> and choose where to save your PDF file</li>
-                <li>Your constitution will be saved as a professional PDF document!</li>
-            </ol>
+            <div class="instructions-header">
+                <h4>📄 How to Save as PDF:</h4>
+                <button class="close-instructions" onclick="closeInstructions()">×</button>
+            </div>
+            <div class="instructions-content">
+                <ol>
+                    <li>Click <strong>Print</strong> in the dialog that just opened</li>
+                    <li>In the print dialog, change the <strong>Destination</strong> to <strong>"Save as PDF"</strong></li>
+                    <li><span class="highlight">⚠️ IMPORTANT:</span> Uncheck <strong>"Headers and footers"</strong> to remove file path</li>
+                    <li>Click <strong>Save</strong> and choose where to save your PDF file</li>
+                    <li>Your constitution will be saved as a professional PDF document!</li>
+                </ol>
+                <div class="tip-box">
+                    <strong>💡 Tip:</strong> Unchecking "Headers and footers" removes the file path but keeps all the content formatting with Roman numerals and bullet points.
+                </div>
+            </div>
         </div>
 
         <div class="controls">
@@ -279,6 +419,7 @@
             <button onclick="addArticle()">Add Article</button>
             <button onclick="exportHTML()">Export HTML</button>
             <button onclick="exportPDF()">Export PDF</button>
+            <button onclick="showInstructions()">📄 PDF Instructions</button>
             <button onclick="importJSON()">Import JSON</button>
             <button onclick="exportJSON()">Export JSON</button>
         </div>
@@ -719,13 +860,55 @@
             // Show instructions
             document.getElementById('pdfInstructions').classList.add('show');
             
+            // Add page numbers to content before printing
+            addPageNumbers();
+            
             // Open print dialog
             window.print();
             
-            // Hide instructions after 10 seconds
+            // Hide instructions after 15 seconds
             setTimeout(() => {
                 document.getElementById('pdfInstructions').classList.remove('show');
-            }, 10000);
+            }, 15000);
+        }
+
+        function closeInstructions() {
+            document.getElementById('pdfInstructions').classList.remove('show');
+        }
+
+        function showInstructions() {
+            document.getElementById('pdfInstructions').classList.add('show');
+        }
+
+        function addPageNumbers() {
+            // Remove any existing page numbers
+            const existingNumbers = document.querySelectorAll('.page-number');
+            existingNumbers.forEach(el => el.remove());
+            
+            // Add page numbers using CSS counter
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    .constitution {
+                        counter-reset: page;
+                    }
+                    
+                    .constitution::after {
+                        content: "Page " counter(page);
+                        position: fixed;
+                        bottom: 0.5in;
+                        right: 0.5in;
+                        font-size: 12px;
+                        color: #666;
+                        counter-increment: page;
+                    }
+                    
+                    @page {
+                        counter-increment: page;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
         }
 
         function exportJSON() {
