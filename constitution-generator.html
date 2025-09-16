@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEGSA Constitution Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .constitution {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .constitution h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+        }
+
+        .constitution h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #34495e;
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+        }
+
+        .constitution h3 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .constitution h4 {
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+
+        .constitution p {
+            margin-bottom: 15px;
+            text-align: justify;
+            text-indent: 2em;
+        }
+
+        .constitution .preamble {
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+        }
+
+        .constitution .article {
+            margin-bottom: 30px;
+        }
+
+        .constitution .section {
+            margin-bottom: 20px;
+        }
+
+        .constitution .subsection {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .constitution .clause {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .constitution .amendments {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #007bff;
+        }
+
+        .signatures {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #007bff;
+        }
+
+        .signature-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .constitution .bullet-point {
+            margin-bottom: 8px;
+            text-align: justify;
+            text-indent: 1em;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .constitution .bullet-point::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .constitution .roman-numeral {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        @media print {
+            .controls {
+                display: none !important;
+            }
+            
+            .constitution {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            body {
+                background: white;
+            }
+            
+            .container {
+                padding: 0;
+            }
+        }
+
+        .pdf-instructions {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .pdf-instructions.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CEGSA Constitution Generator</h1>
+            <p>Edit and generate the Computer Engineering Student Association Constitution</p>
+        </div>
+
+        <div class="pdf-instructions" id="pdfInstructions">
+            <h4>📄 How to Save as PDF:</h4>
+            <ol>
+                <li>Click <strong>Print</strong> in the dialog that just opened</li>
+                <li>In the print dialog, change the <strong>Destination</strong> to <strong>"Save as PDF"</strong></li>
+                <li>Click <strong>Save</strong> and choose where to save your PDF file</li>
+                <li>Your constitution will be saved as a professional PDF document!</li>
+            </ol>
+        </div>
+
+        <div class="controls">
+            <h3>Constitution Settings</h3>
+            
+            <div class="control-group">
+                <label for="constitutionTitle">Constitution Title:</label>
+                <input type="text" id="constitutionTitle" value="CEGSA uOttawa Constitution" placeholder="Enter the title of your constitution">
+            </div>
+
+            <div class="control-group">
+                <label for="organizationName">Organization Name:</label>
+                <input type="text" id="organizationName" value="Computer Engineering Student Association" placeholder="Enter organization name">
+            </div>
+
+            <div class="control-group">
+                <label for="adoptionDate">Adoption Date:</label>
+                <input type="date" id="adoptionDate" value="2024-09-15">
+            </div>
+
+            <div class="control-group">
+                <label for="language">Language:</label>
+                <select id="language">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                </select>
+            </div>
+
+            <button onclick="addArticle()">Add Article</button>
+            <button onclick="exportHTML()">Export HTML</button>
+            <button onclick="exportPDF()">Export PDF</button>
+            <button onclick="importJSON()">Import JSON</button>
+            <button onclick="exportJSON()">Export JSON</button>
+        </div>
+
+        <div id="constitution" class="constitution">
+            <!-- Constitution content will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Load the real CEGSA constitution data
+        let constitutionData = {
+            title: "CEGSA uOttawa Constitution",
+            organization: "Computer Engineering Student Association",
+            adoptionDate: "2024-09-15",
+            lastModified: "September 15th 2025",
+            language: "en",
+            preamble: null,
+            articles: [
+                {
+                    number: "I",
+                    title: "Definitions",
+                    sections: [
+                        { number: null, text: "\"Act\" means the Canada Not-for-profit Corporations Act, SC 2000, c 23." },
+                        { number: null, text: "The \"Constitution\" refers to this document as the primary by-law of the corporation, superseding all other by-laws." },
+                        { number: null, text: "\"Council\" - means the council of members of the Computer Engineering Student Society, including but not limited to, the President(s), all Vice-Presidents, all Directors, all year Representatives, and any member present." },
+                        { number: null, text: "\"Director\" - Members of the Executive Council as defined in Article ___." },
+                        { number: null, text: "\"Executive\" - has the meaning assigned to it by Articles ___ and ___; a Voting and Speaking Member of the Council." },
+                        { number: null, text: "\"Expenditures\" shall refer to all forms of monetary uses including but not limited to expenses, investments, purchases, and reimbursements." },
+                        { number: null, text: "\"Finances\" shall refer to all forms of monetary resources including but not limited to dollars, capital, and currency." },
+                        { number: null, text: "\"Fiscal Year\" begins on May 1st and ends on April 30th of the following year." },
+                        { number: null, text: "\"Membership\" or \"Members\" shall refer to the one class of members set out in the Articles of Incorporation." },
+                        { number: null, text: "\"Organization\" shall refer to the Capital Technology Network corporation." },
+                        { number: null, text: "\"Semester\" shall refer to each of the following periods: May 1st to August 31st, September 1st to December 31st, and January 1st to April 30th." },
+                        { number: null, text: "In the interpretation of this constitution, words in the singular include the plural and vice-versa, words in one gender include all genders, and \"person\" includes an individual, body corporate, partnership, trust, and unincorporated organization." },
+                        { number: null, text: "Other than as specified above, words and expressions defined in the Act have the same meanings when used in these by-laws." },
+                        { number: null, text: "All other words shall carry their dictionary definitions, unless otherwise defined herein." }
+                    ]
+                },
+                {
+                    number: "II",
+                    title: "Mandate",
+                    sections: [
+                        { number: null, text: "The names of the association shall be \"Computer Engineering Student Association\" and \"french version\" under the Act, with the acronyms \"CEGSA\" and \"French acronym.\"" },
+                        { number: null, text: "The Organization shall strive to support students by providing real-world experiences, technological education, and professional opportunities." },
+                        { number: null, text: "The Organization shall foster innovation, creativity, collaboration, equity, diversity, and inclusion, aiming to empower students in the evolving technology industry." }
+                    ]
+                },
+                {
+                    number: "III",
+                    title: "Membership",
+                    sections: [
+                        { number: null, text: "Members must be registered students at a post-secondary institution located in Ottawa, Ontario." },
+                        { number: null, text: "Members must be enrolled in at least one (1) course." },
+                        { number: null, text: "Members who have interrupted their studies may retain their Membership up to six (6) consecutive Semesters after the most recent Semester where they were enrolled in one (1) or more courses." },
+                        { number: null, text: "Members may retain their Membership after graduation for up to three (3) Semesters." },
+                        { number: null, text: "Membership in the Organization is contingent upon compliance with the constitution, by-laws, and all other policies of the Organization." },
+                        { number: null, text: "All Members must receive a copy of these documents and acknowledge their commitment to comply within seven (7) days of joining the Organization." }
+                    ]
+                },
+                {
+                    number: "IV",
+                    title: "Directors",
+                    sections: [
+                        { number: null, text: "The board of directors shall have the following composition:" },
+                        { number: null, text: "President;" },
+                        { number: null, text: "Vice-President of Finance;" },
+                        { number: null, text: "A maximum of ten (10) Directors At-Large." },
+                        { number: null, text: "All Directors must meet the Membership conditions and shall be issued Memberships upon election or appointment." },
+                        { number: null, text: "Directors are responsible for the overall management, strategic direction, and governance of the organization. Directors supervise and oversee the Executives and are accountable to the Organization's stakeholders and Members." },
+                        { number: null, text: "The board of directors has the exclusive authority to initiate legal proceedings on behalf of the Organization and to settle any claims in which the Organization is a party." },
+                        { number: null, text: "Directors may serve on Committees and are responsible for keeping themselves informed of Committee activities and progress." },
+                        { number: null, text: "The President and Vice-President of Finance are designated as Signing Authorities. The Board shall appoint a third Director as a Signing Authority through a majority (½) vote." },
+                        { number: null, text: "Signing Authorities are vested with the authority to execute actions, documents, and agreements that legally or financially bind the Organization on its behalf." },
+                        { number: null, text: "Any disbursement of funds requires signatures from at least two (2) Signing Authorities." },
+                        { number: null, text: "The President has sole signing authority for matters that do not involve the disbursement of funds, provided the Board is notified within 48 hours." },
+                        { number: null, text: "In the event of a vacancy in one or more Signing Authority positions, the Board may appoint additional Directors as temporary Signing Authorities with a majority (½) vote." },
+                        { number: null, text: "In urgent situations where delaying the signing of a document could negatively impact the Organization, a Signing Authority may proceed with the approval of one other Signing Authority." },
+                        { number: null, text: "All signed documents must be kept in the Organization's records, or if not possible, the Board must be promptly informed and details recorded." },
+                        { number: null, text: "Directors may be removed with a majority (½) vote at a Special General Meeting specifically scheduled for this purpose." },
+                        { number: null, text: "Any Director subject to removal shall be given the opportunity to present their case before the removal vote." },
+                        { number: null, text: "All Directors and officers must sign and commit to abide by the Board Code of Conduct within seven (7) days of assuming their roles." },
+                        { number: null, text: "The board of directors may appoint Interim Directors or as additional directors." },
+                        { number: null, text: "Interim Directors may be appointed to fill vacancies resulting from a resignation or as additional directors." },
+                        { number: null, text: "The total number of additional directors appointed may not exceed one-third (⅓) of the number of directors elected at the most recent Annual General Meeting." },
+                        { number: null, text: "The term of an Interim Director shall end immediately prior to the next Election." }
+                    ]
+                },
+                {
+                    number: "V",
+                    title: "Executives",
+                    sections: [
+                        { number: null, text: "An individual cannot hold multiple Executive positions." },
+                        { number: null, text: "An Executive position may be held jointly by two individuals." },
+                        { number: null, text: "All Executives must meet the Membership conditions and shall be issued Memberships upon election or appointment." },
+                        { number: null, text: "All Executives must sign and commit to abide by the Executive Code of Conduct within seven (7) days of becoming an Executives." },
+                        { number: null, text: "If an Executive position is vacant, an Interim Executive must be appointed with a majority (½) vote of the board of directors." },
+                        { number: null, text: "Interim Executives are removed from their positions once the position is filled in an Election." }
+                    ]
+                },
+                {
+                    number: "VI",
+                    title: "Elections",
+                    sections: [
+                        { number: null, text: "Directors and Executives shall be elected by the Membership." },
+                        { number: null, text: "General Elections shall be conducted annually during the Annual General Meeting." },
+                        { number: null, text: "By-Elections to fill vacant positions may be held at any Special General Meeting as needed." },
+                        { number: null, text: "Elections shall be conducted by an impartial Elections Officer who shall have no conflicts of interest in the outcome of the Election." },
+                        { number: null, text: "Any individual who meets the Organization's Membership criteria has the right to be nominated for an elected position." },
+                        { number: null, text: "Elections shall be conducted via secret ballot, with an option to abstain or vote no confidence." },
+                        { number: null, text: "Elections must be conducted in a fair and democratic manner, free from undue bias or interference." },
+                        { number: null, text: "Candidates have the right to present their platforms, respond to questions on an equal footing, and enjoy protection against unfair practices." },
+                        { number: null, text: "To preserve the integrity of the Election, the Elections Officer may impose sanctions on candidates for misconduct." },
+                        { number: null, text: "Candidates subject to sanctions must receive notice and an opportunity to respond." },
+                        { number: null, text: "A supermajority (⅔) vote of Members present may overturn any sanctions before the official results are declared." },
+                        { number: null, text: "Before the Meeting adjourns, any candidate or Member shall have the right to request a recount by a scrutineer who shall be appointed with a majority (½) vote." }
+                    ]
+                },
+                {
+                    number: "VII",
+                    title: "Meetings",
+                    sections: [
+                        { number: null, text: "Meetings of the board of directors (\"Board Meetings\") are held at least monthly." },
+                        { number: null, text: "Only Directors shall have voting rights at Board Meetings." },
+                        { number: null, text: "All Executives shall have speaking rights at Board Meetings." },
+                        { number: null, text: "Members who are not on the board of directors may be yielded speaking rights by any Director." },
+                        { number: null, text: "Secretaries shall have speaking rights on procedural matters at Board Meetings." },
+                        { number: null, text: "Meetings of all committees of directors (\"Committees\") are held at least monthly." },
+                        { number: null, text: "Only members of each Committee have voting rights at Committee Meetings." },
+                        { number: null, text: "Meetings of members (\"General Meetings\") include the annual meetings of members (\"Annual General Meetings\" or \"AGM\") and special meetings of members (\"Special General Meetings\" or \"SGM\")." },
+                        { number: null, text: "All Members shall have speaking and voting rights at General Meetings." },
+                        { number: null, text: "The Annual General Meeting shall occur between September 15th and October 30th." },
+                        { number: null, text: "All Members may submit motions that are consistent with the constitution and relevant laws to be considered at General Meetings." },
+                        { number: null, text: "\"Meeting Minutes\" shall include an outline of a Meeting's agenda, attendance records, relevant debate, and the results of any resolutions passed during the meeting." },
+                        { number: null, text: "Business conducted at Meetings must be recorded in Meeting Minutes and made available to all Members." },
+                        { number: null, text: "Quorum for Board Meetings and virtual ballots shall be two thirds (⅔) of the Board." },
+                        { number: null, text: "Quorum for Committee Meetings shall be three (3) members of the Committee." },
+                        { number: null, text: "Quorum for General Meetings shall be one third (⅓) of the Membership." },
+                        { number: null, text: "Committee Meetings may also be called by the Chair of the Committee." },
+                        { number: null, text: "All Members are entitled to receive notice of, and attend, Meetings in-person or electronically." },
+                        { number: null, text: "External non-Members may be invited to attend and speak at Meetings with a majority (½) vote." },
+                        { number: null, text: "Notice for Board Meetings shall be provided to Members at least 72 hours in advance." },
+                        { number: null, text: "The Agenda may not be modified within 24 hours of the Board Meeting, except by a formal motion during the Meeting." },
+                        { number: null, text: "Emergency Board Meetings may be called at any time without a notice requirement to address urgent or unforeseen matters." },
+                        { number: null, text: "Meetings may enter into an executive session with a majority (½) vote." },
+                        { number: null, text: "Attendance of executive sessions is restricted to those with voting rights and Secretaries, except where another Member is invited with a majority (½) vote." },
+                        { number: null, text: "Executive sessions are strictly confidential to the Members who were entitled to be present at the Meeting." },
+                        { number: null, text: "Meeting Minutes of executive sessions, except for the results of any resolutions passed, shall be recorded separately and stored confidentially." },
+                        { number: null, text: "A resolution requiring a vote in a Meeting can instead be passed with a virtual ballot." },
+                        { number: null, text: "Virtual ballots may be proposed by any Director for resolutions to be voted on by the Board or Membership, or by a member of a Committee for resolutions to be voted on by a Committee." },
+                        { number: null, text: "A virtual ballot is valid if:" },
+                        { number: null, text: "All members with voting rights are notified;" },
+                        { number: null, text: "The quorum that would be required for a Meeting is reached;" },
+                        { number: null, text: "The resolution receives unanimous consent; and" },
+                        { number: null, text: "The result is recorded alongside the other Meeting Minutes." },
+                        { number: null, text: "Virtual ballots do not require a seconder." },
+                        { number: null, text: "If a virtual ballot is amended, the previous vote is void, and members must vote again on the amended version." },
+                        { number: null, text: "The mover of a virtual ballot may withdraw it at any time before the virtual ballot is closed." },
+                        { number: null, text: "Voting on resolutions may be conducted electronically or in person, allowing for hybrid participation, but proxy voting is not permitted." }
+                    ]
+                },
+                {
+                    number: "VIII",
+                    title: "Policies",
+                    sections: [
+                        { number: null, text: "Policies may be adopted with a majority (½) vote of the board of directors." },
+                        { number: null, text: "Policies are supplementary by-laws that establish detailed procedures, guidelines, and regulations for areas not explicitly covered in the Constitution. Policies govern the Corporation's operations and strategic direction, ensuring efficiency, clarity, consistency, and effective functioning in all activities." },
+                        { number: null, text: "Policies shall be subject to amendment or repeal through the same process as their adoption." }
+                    ]
+                },
+                {
+                    number: "IX",
+                    title: "Events",
+                    sections: [
+                        { number: null, text: "The Organization shall organize and host a large-scale hackathon event every year, the \"Hackathon.\" This event shall be the flagship event of the Organization." },
+                        { number: null, text: "The Organization shall organize and host a series of events known as the \"Hacker Series\", aiming to foster a sense of community and providing additional learning and networking opportunities for participants." },
+                        { number: null, text: "Events shall be organized in alignment with the goals and objectives of the Organization with the resources allocation necessary for their successful execution." }
+                    ]
+                },
+                {
+                    number: "X",
+                    title: "Finances",
+                    sections: [
+                        { number: null, text: "The Organization shall utilize funds in accordance with the mandate of the Organization, reinvesting any profits." },
+                        { number: null, text: "Assets owned by the Organization shall be held under the name of the corporation." },
+                        { number: null, text: "Finances shall be disclosed in a transparent manner to Members." },
+                        { number: null, text: "Financial reports must be presented at a General Meeting at least once (1) every Semester." },
+                        { number: null, text: "Members may incur Budgeted expenditures with proper authorization, in accordance with relevant policies." }
+                    ]
+                },
+                {
+                    number: "XI",
+                    title: "Amendments",
+                    sections: [
+                        { number: null, text: "This constitution may be amended by a supermajority (⅔) vote at an Board Meeting." },
+                        { number: null, text: "Proposed amendments, along with the rationale for the changes, must be submitted to the board of directors." },
+                        { number: null, text: "If a proposed amendment is adopted, it shall become effective immediately, unless otherwise specified in the amendment itself." },
+                        { number: null, text: "Amendments adopted by the board of directors are subject to confirmation, rejection, or amendment at the next General Meeting." },
+                        { number: null, text: "If an amendment is rejected or not considered at the next General Meeting, it ceases to have effect, and subsequent motions with the same purpose or effect will not take effect until confirmed." }
+                    ]
+                }
+            ],
+            amendments: [],
+            signatures: []
+        };
+
+        // Language translations
+        const translations = {
+            en: {
+                preamble: "Preamble",
+                article: "Article",
+                section: "Section",
+                amendments: "Amendments",
+                signatures: "Signatures",
+                adopted: "Adopted on"
+            },
+            es: {
+                preamble: "Preámbulo",
+                article: "Artículo",
+                section: "Sección",
+                amendments: "Enmiendas",
+                signatures: "Firmas",
+                adopted: "Adoptado el"
+            },
+            fr: {
+                preamble: "Préambule",
+                article: "Article",
+                section: "Section",
+                amendments: "Amendements",
+                signatures: "Signatures",
+                adopted: "Adopté le"
+            }
+        };
+
+        function generateConstitution() {
+            const title = document.getElementById('constitutionTitle').value;
+            const organization = document.getElementById('organizationName').value;
+            const adoptionDate = document.getElementById('adoptionDate').value;
+            const language = document.getElementById('language').value;
+
+            // Update constitution data
+            constitutionData.title = title;
+            constitutionData.organization = organization;
+            constitutionData.adoptionDate = adoptionDate;
+            constitutionData.language = language;
+
+            const constitutionDiv = document.getElementById('constitution');
+            const t = translations[language] || translations.en;
+
+            let html = `
+                <h1>${title}</h1>
+                <p style="text-align: center; margin-bottom: 30px; font-style: italic;">Last Modified: ${constitutionData.lastModified}</p>
+                
+                <div class="articles">
+            `;
+
+            constitutionData.articles.forEach(article => {
+                html += `
+                    <div class="article">
+                        <h2>Article <span class="roman-numeral">${article.number}</span>: ${article.title}</h2>
+                `;
+
+                article.sections.forEach(section => {
+                    if (section.number) {
+                        html += `
+                            <div class="section">
+                                <h4>${t.section} ${article.number}.${section.number}</h4>
+                                <p>${section.text}</p>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="bullet-point">
+                                ${section.text}
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `</div>`;
+            });
+
+            if (constitutionData.amendments.length > 0) {
+                html += `
+                    <div class="amendments">
+                        <h2>${t.amendments}</h2>
+                `;
+
+                constitutionData.amendments.forEach((amendment, index) => {
+                    html += `
+                        <div class="amendment">
+                            <h3>Amendment ${index + 1}</h3>
+                            <p>${amendment.text}</p>
+                            <p><em>Adopted: ${amendment.date}</em></p>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            }
+
+            html += `
+                    <div class="signatures">
+                        <h2>${t.signatures}</h2>
+                        <p><strong>${t.adopted}:</strong> ${new Date(adoptionDate).toLocaleDateString()}</p>
+            `;
+
+            constitutionData.signatures.forEach(signature => {
+                html += `
+                    <div class="signature-line">
+                        <span>${signature.title}:</span>
+                        <span>_______________________</span>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+
+            constitutionDiv.innerHTML = html;
+        }
+
+        function addArticle() {
+            const articleNumber = String.fromCharCode(65 + constitutionData.articles.length); // A, B, C, etc.
+            const title = prompt("Enter article title:");
+            if (title) {
+                constitutionData.articles.push({
+                    number: articleNumber,
+                    title: title,
+                    sections: [
+                        {
+                            number: null,
+                            text: prompt("Enter section 1 text:") || "Section text here."
+                        }
+                    ]
+                });
+                generateConstitution();
+            }
+        }
+
+        function exportHTML() {
+            const html = document.getElementById('constitution').innerHTML;
+            const fullHTML = `
+<!DOCTYPE html>
+<html lang="${constitutionData.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${constitutionData.title}</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #34495e;
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+        }
+        h3 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        h4 {
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+            text-indent: 2em;
+        }
+        .bullet-point {
+            margin-bottom: 8px;
+            text-align: justify;
+            text-indent: 1em;
+            position: relative;
+            padding-left: 20px;
+        }
+        .bullet-point::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .roman-numeral {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .signature-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        @media print {
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+    ${html}
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${constitutionData.organization.replace(/\s+/g, '_')}_Constitution.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportPDF() {
+            // Show instructions
+            document.getElementById('pdfInstructions').classList.add('show');
+            
+            // Open print dialog
+            window.print();
+            
+            // Hide instructions after 10 seconds
+            setTimeout(() => {
+                document.getElementById('pdfInstructions').classList.remove('show');
+            }, 10000);
+        }
+
+        function exportJSON() {
+            const jsonData = JSON.stringify(constitutionData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${constitutionData.organization.replace(/\s+/g, '_')}_Constitution.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            constitutionData = data;
+                            
+                            // Update form fields
+                            document.getElementById('constitutionTitle').value = data.title || '';
+                            document.getElementById('organizationName').value = data.organization || '';
+                            document.getElementById('adoptionDate').value = data.adoptionDate || '';
+                            document.getElementById('language').value = data.language || 'en';
+                            
+                            generateConstitution();
+                        } catch (error) {
+                            alert('Error importing JSON file: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateConstitution();
+            
+            // Add event listeners
+            document.getElementById('constitutionTitle').addEventListener('input', generateConstitution);
+            document.getElementById('organizationName').addEventListener('input', generateConstitution);
+            document.getElementById('adoptionDate').addEventListener('input', generateConstitution);
+            document.getElementById('language').addEventListener('change', generateConstitution);
+        });
+    </script>
+</body>
+</html>
