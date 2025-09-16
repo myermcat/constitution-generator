@@ -278,7 +278,7 @@
             border-radius: 12px;
             padding: 0;
             margin-bottom: 20px;
-            display: none;
+            display: block;
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
             overflow: hidden;
         }
@@ -303,9 +303,6 @@
             background: #4a90e2;
             color: white;
             padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin: 0;
         }
 
@@ -313,22 +310,6 @@
             margin: 0;
             font-size: 18px;
             font-weight: 600;
-        }
-
-        .close-instructions {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .close-instructions:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .instructions-content {
@@ -371,7 +352,6 @@
         <div class="pdf-instructions" id="pdfInstructions">
             <div class="instructions-header">
                 <h4>📄 How to Save as PDF:</h4>
-                <button class="close-instructions" onclick="closeInstructions()">×</button>
             </div>
             <div class="instructions-content">
                 <ol>
@@ -382,7 +362,7 @@
                     <li>Your constitution will be saved as a professional PDF document!</li>
                 </ol>
                 <div class="tip-box">
-                    <strong>💡 Tip:</strong> Unchecking "Headers and footers" removes the file path but keeps all the content formatting with Roman numerals and bullet points.
+                    <strong>💡 Tip:</strong> Unchecking "Headers and footers" removes the file path but keeps all the content formatting with Roman numerals and bullet points. Page numbers are automatically added to the PDF content.
                 </div>
             </div>
         </div>
@@ -419,7 +399,6 @@
             <button onclick="addArticle()">Add Article</button>
             <button onclick="exportHTML()">Export HTML</button>
             <button onclick="exportPDF()">Export PDF</button>
-            <button onclick="showInstructions()">📄 PDF Instructions</button>
             <button onclick="importJSON()">Import JSON</button>
             <button onclick="exportJSON()">Export JSON</button>
         </div>
@@ -857,58 +836,69 @@
         }
 
         function exportPDF() {
-            // Show instructions
-            document.getElementById('pdfInstructions').classList.add('show');
-            
             // Add page numbers to content before printing
             addPageNumbers();
             
             // Open print dialog
             window.print();
-            
-            // Hide instructions after 15 seconds
-            setTimeout(() => {
-                document.getElementById('pdfInstructions').classList.remove('show');
-            }, 15000);
         }
 
-        function closeInstructions() {
-            document.getElementById('pdfInstructions').classList.remove('show');
-        }
-
-        function showInstructions() {
-            document.getElementById('pdfInstructions').classList.add('show');
-        }
 
         function addPageNumbers() {
-            // Remove any existing page numbers
+            // Remove any existing page numbers and styles
             const existingNumbers = document.querySelectorAll('.page-number');
             existingNumbers.forEach(el => el.remove());
             
-            // Add page numbers using CSS counter
+            const existingStyles = document.querySelectorAll('#page-number-style');
+            existingStyles.forEach(el => el.remove());
+            
+            // Add CSS for page numbers that work without headers/footers
             const style = document.createElement('style');
+            style.id = 'page-number-style';
             style.textContent = `
                 @media print {
-                    .constitution {
-                        counter-reset: page;
-                    }
-                    
-                    .constitution::after {
-                        content: "Page " counter(page);
+                    .page-number-print {
                         position: fixed;
                         bottom: 0.5in;
                         right: 0.5in;
                         font-size: 12px;
                         color: #666;
-                        counter-increment: page;
+                        z-index: 1000;
                     }
                     
+                    /* Force page numbers to appear on every page */
                     @page {
-                        counter-increment: page;
+                        @bottom-right {
+                            content: "Page " counter(page);
+                            font-size: 12px;
+                            color: #666;
+                        }
+                    }
+                    
+                    /* Fallback: Add page numbers to content */
+                    .constitution {
+                        counter-reset: page-counter;
+                    }
+                    
+                    .constitution::after {
+                        content: "Page " counter(page-counter);
+                        position: fixed;
+                        bottom: 0.5in;
+                        right: 0.5in;
+                        font-size: 12px;
+                        color: #666;
+                        counter-increment: page-counter;
                     }
                 }
             `;
             document.head.appendChild(style);
+            
+            // Add page number elements to the constitution content
+            const constitutionDiv = document.getElementById('constitution');
+            const pageNumberDiv = document.createElement('div');
+            pageNumberDiv.className = 'page-number-print';
+            pageNumberDiv.innerHTML = '<span class="page-number-text">Page numbers will appear in PDF</span>';
+            constitutionDiv.appendChild(pageNumberDiv);
         }
 
         function exportJSON() {
