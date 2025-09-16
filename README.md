@@ -2,6 +2,14 @@
 
 A simple, powerful tool for creating, editing, and generating constitutions in HTML and PDF formats. Based on the CEGSA (Computer Engineering Student Association) constitution structure.
 
+## 🖼️ Screenshots
+
+### Main Interface
+<img width="1184" height="459" alt="Screenshot 2025-09-15 at 10 45 34 PM" src="https://github.com/user-attachments/assets/47846800-c8e4-4aa2-9a27-c21f5dcf8ee1" />
+
+### Generated Constitution with Table of Contents
+<img width="1000" height="663" alt="Screenshot 2025-09-15 at 10 48 06 PM" src="https://github.com/user-attachments/assets/501378ba-4c0a-4367-b531-0451964cdde6" />
+
 ## 📄 How to Save as PDF (Most Important!)
 
 **This is the #1 feature you'll use:**
