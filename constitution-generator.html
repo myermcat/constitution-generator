@@ -975,12 +975,7 @@
             `;
             document.head.appendChild(style);
             
-            // Add page number elements to the constitution content
-            const constitutionDiv = document.getElementById('constitution');
-            const pageNumberDiv = document.createElement('div');
-            pageNumberDiv.className = 'page-number-print';
-            pageNumberDiv.innerHTML = '<span class="page-number-text">Page numbers will appear in PDF</span>';
-            constitutionDiv.appendChild(pageNumberDiv);
+            // Page numbers are handled by CSS counters and @page rules
         }
 
         function exportJSON() {
