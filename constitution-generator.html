@@ -197,6 +197,54 @@
             color: #2c3e50;
         }
 
+        .table-of-contents {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .table-of-contents h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 8px;
+        }
+
+        .toc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .toc-item:last-child {
+            border-bottom: none;
+        }
+
+        .toc-article {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .toc-page {
+            font-weight: 600;
+            color: #4a90e2;
+            background: #e7f3ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
         @media print {
             .controls {
                 display: none !important;
@@ -389,10 +437,7 @@
                 <label for="language">Language:</label>
                 <select id="language">
                     <option value="en">English</option>
-                    <option value="es">Spanish</option>
                     <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="it">Italian</option>
                 </select>
             </div>
 
@@ -615,14 +660,6 @@
                 signatures: "Signatures",
                 adopted: "Adopted on"
             },
-            es: {
-                preamble: "Preámbulo",
-                article: "Artículo",
-                section: "Sección",
-                amendments: "Enmiendas",
-                signatures: "Firmas",
-                adopted: "Adoptado el"
-            },
             fr: {
                 preamble: "Préambule",
                 article: "Article",
@@ -632,6 +669,33 @@
                 adopted: "Adopté le"
             }
         };
+
+        function generateTableOfContents() {
+            let toc = '';
+            constitutionData.articles.forEach(article => {
+                toc += `
+                    <div class="toc-item">
+                        <span class="toc-article">Article ${article.number}: ${article.title}</span>
+                        <span class="toc-page" data-article="${article.number}">...</span>
+                    </div>
+                `;
+            });
+            return toc;
+        }
+
+        function updateTableOfContents() {
+            // This function will be called after page numbers are calculated
+            const tocItems = document.querySelectorAll('.toc-page');
+            tocItems.forEach(item => {
+                const articleNumber = item.getAttribute('data-article');
+                const articleElement = document.querySelector(`h2:contains("Article ${articleNumber}")`);
+                if (articleElement) {
+                    // For now, we'll use placeholder page numbers
+                    // In a real implementation, you'd calculate actual page numbers
+                    item.textContent = 'Page ...';
+                }
+            });
+        }
 
         function generateConstitution() {
             const title = document.getElementById('constitutionTitle').value;
@@ -648,9 +712,21 @@
             const constitutionDiv = document.getElementById('constitution');
             const t = translations[language] || translations.en;
 
+            // Update last modified date to current date
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            constitutionData.lastModified = now.toLocaleDateString('en-US', options);
+
             let html = `
                 <h1>${title}</h1>
                 <p style="text-align: center; margin-bottom: 30px; font-style: italic;">Last Modified: ${constitutionData.lastModified}</p>
+                
+                <div class="table-of-contents">
+                    <h2>Table of Contents</h2>
+                    <div class="toc-list">
+                        ${generateTableOfContents()}
+                    </div>
+                </div>
                 
                 <div class="articles">
             `;
